@@ -302,6 +302,7 @@ class DocumentMetadata(object):
         #: and written to the ``/EmbeddedFiles`` dictionary in PDF.
         self.attachments = attachments or []
 
+noop = lambda *a, **w: None
 
 class Document(object):
     """A rendered document, with access to individual pages
@@ -315,7 +316,7 @@ class Document(object):
     """
     @classmethod
     def _render(cls, html, stylesheets, enable_hinting,
-                presentational_hints=False):
+                presentational_hints=False, status_func=None):
         font_config = FontConfiguration()
         style_for = get_all_computed_styles(
             html, presentational_hints=presentational_hints, user_stylesheets=[
@@ -325,11 +326,13 @@ class Document(object):
             font_config=font_config)
         get_image_from_uri = functools.partial(
             images.get_image_from_uri, {}, html.url_fetcher)
+
+        status_func('layout-document')
         page_boxes = layout_document(
             enable_hinting, style_for, get_image_from_uri,
             build_formatting_structure(
                 html.root_element, style_for, get_image_from_uri),
-            font_config)
+            font_config, status_func=status_func)
         rendering = cls(
             [Page(p, enable_hinting) for p in page_boxes],
             DocumentMetadata(**html._get_metadata()), html.url_fetcher)

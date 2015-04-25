@@ -533,7 +533,7 @@ def make_page(context, root_box, page_type, resume_at, content_empty,
     return page, resume_at, next_page
 
 
-def make_all_pages(context, root_box):
+def make_all_pages(context, root_box, status_func=None):
     """Return a list of laid out pages without margin boxes."""
     prefix = 'first_'
 
@@ -557,6 +557,7 @@ def make_all_pages(context, root_box):
     page_number = 0
     while True:
         page_number += 1
+        status_func('page', number=page_number)
         content_empty = ((next_page == 'left' and right_page) or
                          (next_page == 'right' and not right_page))
         if content_empty:

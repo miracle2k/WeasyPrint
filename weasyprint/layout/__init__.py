@@ -38,7 +38,7 @@ def layout_fixed_boxes(context, pages):
 
 
 def layout_document(enable_hinting, style_for, get_image_from_uri, root_box,
-                    font_config):
+                    font_config, status_func=None):
     """Lay out the whole document.
 
     This includes line breaks, page breaks, absolute size and position for all
@@ -50,7 +50,7 @@ def layout_document(enable_hinting, style_for, get_image_from_uri, root_box,
     """
     context = LayoutContext(
         enable_hinting, style_for, get_image_from_uri, font_config)
-    pages = list(make_all_pages(context, root_box))
+    pages = list(make_all_pages(context, root_box, status_func=status_func))
     page_counter = [1]
     counter_values = {'page': page_counter, 'pages': [len(pages)]}
     for i, page in enumerate(pages):
